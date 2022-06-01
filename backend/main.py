@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 import re
 import uuid
+import jwt
+import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 regex_mail = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -46,6 +48,22 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User has been created!'}), 201
+
+@app.route('/login')
+def login():
+    auth = request.authorization
+
+    if auth and auth.username and auth.password:
+        user = User.query.filter_by(email=auth.username).first()
+        if user:
+            #check password
+            if check_password_hash(user.password, auth.password):
+                token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+                return jsonify({'token': token})
+            return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+
+    return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
 if __name__ == "__main__":
     app.run(debug=True)

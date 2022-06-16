@@ -1,22 +1,40 @@
 <script>
+	import { spread } from "svelte/internal";
+
 	import Year from "./Year.svelte";
 	export let life = [];
-	let previous_selection = undefined;
-	let selected = undefined;
+	let prev_selected = { x: undefined, y: undefined };
+	let selected = { x: undefined, y: undefined };
 
-	function changeColor(new_element) {
-		if (new_element) {
-			if (previous_selection) {
-				previous_selection.style.backgroundColor = "lightgrey";
+	function changeColor() {
+		if (prev_selected.x + prev_selected.y >= 0) {
+			// A week was selected
+			if (selected.x + selected.y >= 0) {
+				// A week is selected
+				if (
+					selected.x == prev_selected.x &&
+					selected.y == prev_selected.y
+				) {
+					// The week previously selected if the same as the new one
+					// We remove the coloration on this week, and reset prev_selected
+					life[selected.x][selected.y].color = "lightgrey";
+					prev_selected = { x: undefined, y: undefined };
+				} else {
+					// There is a new week selected, and a different previous week
+					life[prev_selected.x][prev_selected.y].color = "lightgrey";
+					life[selected.x][selected.y].color = "red";
+					prev_selected = selected;
+				}
 			}
-			if (new_element != previous_selection) {
-				previous_selection = new_element;
-				previous_selection.style.backgroundColor = "red";
+		} else {
+			if (selected.x + selected.y >= 0) {
+				life[selected.x][selected.y].color = "red";
+				prev_selected = selected;
 			}
 		}
 	}
 
-	$: selected, changeColor(selected);
+	$: selected, changeColor();
 </script>
 
 <div class="life">
@@ -32,6 +50,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		gap: 2px;
+		gap: 4px;
 	}
 </style>

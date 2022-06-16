@@ -1,15 +1,16 @@
 <script>
 	let week;
 	export let color = "lightgrey";
+	export let pos = { x: undefined, y: undefined };
 	export let content = "";
-	export let selected = undefined;
+	export let selected = { x: undefined, y: undefined };
 
 	function selection() {
-		selected = week;
+		selected = pos;
 	}
 </script>
 
-{#if color == "lightgrey"}
+{#if content == ""}
 	<div
 		bind:this={week}
 		class="week"
@@ -24,7 +25,7 @@
 
 <style>
 	* {
-		--size: 10px;
+		--size: 12px;
 	}
 
 	.week {

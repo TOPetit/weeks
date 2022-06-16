@@ -2,7 +2,7 @@
 	import Week from "./Week.svelte";
 	export let year = [];
 	export let year_id = 0;
-	export let selected = undefined;
+	export let selected = { x: undefined, y: undefined };
 </script>
 
 <div class="year">
@@ -13,10 +13,10 @@
 			bind:selected
 		/>
 	{:else}
-		<Week color={"rgba(0, 0, 0, 0)"} bind:selected />
+		<Week color={"rgba(0, 0, 0, 0)"} content={" "} bind:selected />
 	{/if}
-	{#each year as { color }, i}
-		<Week {color} bind:selected />
+	{#each year as { color, pos }, i}
+		<Week {color} {pos} bind:selected />
 	{/each}
 </div>
 
@@ -26,6 +26,6 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		gap: 2px;
+		gap: 4px;
 	}
 </style>

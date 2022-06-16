@@ -24,6 +24,6 @@
 		margin: auto;
 		display: flex;
 		justify-content: center;
-		gap: 50px;
+		gap: 100px;
 	}
 </style>

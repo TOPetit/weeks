@@ -3,7 +3,7 @@
 
 	import Year from "./Year.svelte";
 	export let life = [];
-	let prev_selected = { x: undefined, y: undefined };
+	export let prev_selected = { x: undefined, y: undefined };
 	let selected = { x: undefined, y: undefined };
 
 	function changeColor() {
